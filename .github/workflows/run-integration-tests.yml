@@ -24,7 +24,6 @@ jobs:
           - agent: "MonologueAgent"
             embedding-model: "local"
           - agent: "MonologueAgent"
-            # sufficient to have one agent testing against local sandbox
             sandbox: "local"
             embedding-model: "local"
           - agent: "SWEAgent"
@@ -36,17 +35,19 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install poetry via pipx
-        run: pipx install poetry
-
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
           cache: 'poetry'
 
-      - name: Install Python dependencies using Poetry
-        run: poetry install
+      - name: Install Poetry
+        run: |
+          python3 -m venv .venv
+          source .venv/bin/activate
+          pip install --upgrade pip
+          pip install poetry
+          poetry install
 
       - name: Build Environment
         run: make build
